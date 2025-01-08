@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type TodoItem struct {
@@ -32,16 +33,35 @@ func main() {
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 
 		counter++ // increment
 		t.ID = counter
 		todos = append(todos, t)
 		w.WriteHeader(http.StatusCreated)
-		return
 	})
 
-	mux.HandleFunc("DELETE /todo", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("DELETE /todo/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.Atoi(r.PathValue("id"))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		found := false
+		for _, x := range todos {
+			if x.ID == id {
+				found = true
+				todos = append(todos[:id-1], todos[id:]...)
+			}
+		}
+		if !found {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
 
 	})
 

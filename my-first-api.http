@@ -8,3 +8,6 @@ Content-Type: application/json
 {
   "item": "read golang book"
 }
+
+### DELETE request to remove an item
+DELETE http://localhost:8080/todo/2
