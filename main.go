@@ -7,13 +7,14 @@ import (
 )
 
 type TodoItem struct {
+	ID   int    `json:"id"`
 	Item string `json:"item"`
 }
 
 func main() {
-	var todos = make([]string, 0)
+	var todos = make([]TodoItem, 0)
 	mux := http.NewServeMux()
-
+	counter := 0
 	mux.HandleFunc("GET /todo", func(w http.ResponseWriter, r *http.Request) {
 		b, err := json.Marshal(todos)
 		if err != nil {
@@ -33,9 +34,15 @@ func main() {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 
-		todos = append(todos, t.Item)
+		counter++ // increment
+		t.ID = counter
+		todos = append(todos, t)
 		w.WriteHeader(http.StatusCreated)
 		return
+	})
+
+	mux.HandleFunc("DELETE /todo", func(w http.ResponseWriter, r *http.Request) {
+
 	})
 
 	if err := http.ListenAndServe(":8080", mux); err != nil {
