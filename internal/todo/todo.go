@@ -4,6 +4,7 @@ type TodoItem struct {
 	ID   int    `json:"id"`
 	Item string `json:"item"`
 }
+
 type Service struct {
 	todos []TodoItem
 }
@@ -21,4 +22,9 @@ func (svc *Service) Add(todo TodoItem) {
 
 func (svc *Service) GetAll() []TodoItem {
 	return svc.todos
+}
+
+func (svc *Service) Remove(index int) {
+	allTodos := svc.todos
+	allTodos = append(allTodos[:index], allTodos[index+1:]...)
 }

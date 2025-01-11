@@ -6,7 +6,7 @@ POST http://localhost:8080/todo
 Content-Type: application/json
 
 {
-  "item": "pay bills"
+  "item": "read golang book"
 }
 
 ### DELETE request to remove an item
