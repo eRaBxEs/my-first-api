@@ -35,10 +35,14 @@ func NewServer(todoSvc *todo.Service) *Server {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-
 		counter++ // increment
 		t.ID = counter
-		todoSvc.Add(t)
+		err = todoSvc.Add(t)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Println(err)
+			return
+		}
 		w.WriteHeader(http.StatusCreated)
 	})
 

@@ -1,5 +1,7 @@
 package todo
 
+import "errors"
+
 type TodoItem struct {
 	ID   int    `json:"id"`
 	Item string `json:"item"`
@@ -16,8 +18,14 @@ func NewService() *Service {
 }
 
 /* Adding logics that we will need */
-func (svc *Service) Add(todo TodoItem) {
+func (svc *Service) Add(todo TodoItem) error {
+	for _, t := range svc.GetAll() {
+		if t.Item == todo.Item {
+			return errors.New("todo is not unique")
+		}
+	}
 	svc.todos = append(svc.todos, todo)
+	return nil
 }
 
 func (svc *Service) GetAll() []TodoItem {
