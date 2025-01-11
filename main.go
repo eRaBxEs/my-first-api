@@ -3,21 +3,17 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"my-first-api/internal/todo"
 	"net/http"
 	"strconv"
 )
 
-type TodoItem struct {
-	ID   int    `json:"id"`
-	Item string `json:"item"`
-}
-
 func main() {
-	var todos = make([]TodoItem, 0)
+	svc := todo.NewService()
 	mux := http.NewServeMux()
 	counter := 0
 	mux.HandleFunc("GET /todo", func(w http.ResponseWriter, r *http.Request) {
-		b, err := json.Marshal(todos)
+		b, err := json.Marshal(svc.GetAll())
 		if err != nil {
 			log.Println(err)
 		}
@@ -28,7 +24,7 @@ func main() {
 	})
 
 	mux.HandleFunc("POST /todo", func(w http.ResponseWriter, r *http.Request) {
-		var t TodoItem
+		var t todo.TodoItem
 		err := json.NewDecoder(r.Body).Decode(&t)
 		if err != nil {
 			log.Println(err)
@@ -38,7 +34,7 @@ func main() {
 
 		counter++ // increment
 		t.ID = counter
-		todos = append(todos, t)
+		svc.Add(t)
 		w.WriteHeader(http.StatusCreated)
 	})
 
@@ -48,12 +44,13 @@ func main() {
 			log.Println(err)
 			return
 		}
-
+		todos := svc.GetAll()
 		found := false
-		for _, x := range todos {
+		for _, x := range svc.GetAll() {
 			if x.ID == id {
 				found = true
 				todos = append(todos[:id-1], todos[id:]...)
+				break
 			}
 		}
 		if !found {
