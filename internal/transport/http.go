@@ -28,15 +28,14 @@ func NewServer(todoSvc *todo.Service) *Server {
 	})
 
 	mux.HandleFunc("POST /todo", func(w http.ResponseWriter, r *http.Request) {
-		var t todo.TodoItem
+		var t string
 		err := json.NewDecoder(r.Body).Decode(&t)
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		counter++ // increment
-		t.ID = counter
+
 		err = todoSvc.Add(t)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)

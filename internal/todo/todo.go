@@ -7,28 +7,36 @@ type TodoItem struct {
 	Item string `json:"item"`
 }
 
+type Item struct {
+	Task   string `json:"task"`
+	Status string `json:"status"`
+}
+
 type Service struct {
-	todos []TodoItem
+	todos []Item
 }
 
 func NewService() *Service {
 	return &Service{
-		todos: make([]TodoItem, 0),
+		todos: make([]Item, 0),
 	}
 }
 
 /* Adding logics that we will need */
-func (svc *Service) Add(todo TodoItem) error {
-	for _, t := range svc.GetAll() {
-		if t.Item == todo.Item {
+func (svc *Service) Add(todo string) error {
+	for _, t := range svc.todos {
+		if t.Task == todo {
 			return errors.New("todo is not unique")
 		}
 	}
-	svc.todos = append(svc.todos, todo)
+	svc.todos = append(svc.todos, Item{
+		Task:   todo,
+		Status: "TO_BE_STARTED",
+	})
 	return nil
 }
 
-func (svc *Service) GetAll() []TodoItem {
+func (svc *Service) GetAll() []Item {
 	return svc.todos
 }
 
