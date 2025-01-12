@@ -2,14 +2,9 @@ package todo
 
 import "errors"
 
-type TodoItem struct {
-	ID   int    `json:"id"`
-	Item string `json:"item"`
-}
-
 type Item struct {
-	Task   string `json:"task"`
-	Status string `json:"status"`
+	Task   string
+	Status string
 }
 
 type Service struct {
