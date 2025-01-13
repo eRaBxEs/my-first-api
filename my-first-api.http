@@ -6,8 +6,12 @@ POST http://localhost:8080/todo
 Content-Type: application/json
 
 {
-  "item": "get groceries"
+  "item": "go shopping"
 }
+
+### GET request to search TODO
+GET http://localhost:8080/search?q=shop
+
 
 ### DELETE request to remove an item
 DELETE http://localhost:8080/todo/2

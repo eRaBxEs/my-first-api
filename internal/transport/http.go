@@ -46,6 +46,29 @@ func NewServer(todoSvc *todo.Service) *Server {
 		w.WriteHeader(http.StatusCreated)
 	})
 
+	mux.HandleFunc("GET /search", func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query().Get("q")
+		if query == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		results := todoSvc.Search(query)
+		b, err := json.Marshal(results) // marshal it into a byte stream
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		_, err = w.Write(b)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+	})
+
 	mux.HandleFunc("DELETE /todo/{id}", func(w http.ResponseWriter, r *http.Request) {
 		_, err := strconv.Atoi(r.PathValue("id"))
 		if err != nil {
