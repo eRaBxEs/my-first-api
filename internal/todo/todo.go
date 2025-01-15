@@ -21,6 +21,7 @@ func NewService() *Service {
 }
 
 /* Adding logics that we will need */
+
 func (svc *Service) Add(todo string) error {
 	for _, t := range svc.todos {
 		if t.Task == todo {
